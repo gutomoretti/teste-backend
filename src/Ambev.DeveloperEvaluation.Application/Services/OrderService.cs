@@ -23,20 +23,38 @@ namespace Ambev.DeveloperEvaluation.Application.Services
         public async Task<Order> CreateOrderAsync(Order order)
         {
             decimal total = 0;
+            int totalItems = 0;
 
             foreach (var item in order.Items)
             {
+                if (item.Quantity > 20)
+                    throw new Exception($"Cannot add more than 20 units of product {item.ProductId}");
+
                 var product = await _productRepository.GetByIdAsync(item.ProductId);
 
                 if (product == null)
                     throw new Exception("Product Not Found");
 
                 item.UnitPrice = product.UnitPrice;
-                total += product.UnitPrice * item.Quantity;
+
+                totalItems += item.Quantity;
+                total += item.UnitPrice * item.Quantity;
             }
 
             order.Total = total;
-            order.Discount = 0;
+
+            if (totalItems >= 5)
+            {
+                if (totalItems >= 15)
+                {
+                    order.Discount = total * 0.10m;
+                }
+
+                if (total >= 500)
+                {
+                    order.Discount = total * 0.20m;
+                }
+            }
 
             await _orderRepository.AddAsync(order);
             return order;
