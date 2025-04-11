@@ -25,6 +25,12 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(Order order)
+        {
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
             var order = await _context.Orders

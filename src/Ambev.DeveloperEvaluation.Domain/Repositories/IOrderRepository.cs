@@ -12,5 +12,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories
         Task AddAsync(Order order);
         Task<Order?> GetByIdAsync(Guid id);
         Task<IEnumerable<Order>> GetAllAsync();
+        Task DeleteAsync(Order order);
     }
 }
